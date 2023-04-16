@@ -8,6 +8,6 @@
  
  This github repistory has all the code for you to create your own! 
  
- ([image_url](https://github.com/sallymohamud1999/fakenewsdetection/blob/main/Screenshot%202023-04-16%20162806.png?raw=true))
- 
+ ![fakenewsapp](https://github.com/sallymohamud1999/fakenewsdetection/blob/main/Screenshot%202023-04-16%20162806.png?raw=true)
+
  Enjoy!
