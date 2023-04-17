@@ -4,16 +4,28 @@ from sklearn.linear_model import PassiveAggressiveClassifier
 import pickle
 import pandas as pd
 from sklearn.model_selection import train_test_split
+import pyodbc
 
 app = Flask(__name__)
 tfvect = TfidfVectorizer(stop_words='english', max_df=0.7)
 loaded_model = pickle.load(open('model.pkl', 'rb'))
-dataframe = pd.read_csv('news.csv')
-x = dataframe['text']
-y = dataframe['label']
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
 
 def fake_news_det(news):
+    conn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
+                          'Server=<fakenews.database.windows.net>.database.windows.net;'
+                          'Database=<fakenewsdetectionapp>;'
+                          'uid=<cdpteam>@<fakenews.database.windows.net>;'
+                          'pwd=<Password1>')
+    cursor = conn.cursor()
+    cursor.execute('SELECT text, label FROM newsdb')
+    news_data = cursor.fetchall()
+    conn.close()
+
+    dataframe = pd.DataFrame(news_data, columns=['text', 'label'])
+    x = dataframe['text']
+    y = dataframe['label']
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
+
     tfid_x_train = tfvect.fit_transform(x_train)
     tfid_x_test = tfvect.transform(x_test)
     input_data = [news]
@@ -37,4 +49,3 @@ def predict():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
